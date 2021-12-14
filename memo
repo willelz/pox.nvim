@@ -1,0 +1,35 @@
+Turn off computer
+    
+    _|_            ___          \  |  / 
+   / | \          /   \          \ | /  
+  |  |  |        |  |  |       ---   ---
+  |     |        |  |  |         / | \  
+   \___/          \___/         /  |  \ 
+
+Stand By(J)    Turn Off(K)    Restart(L)
+
+                                        
+                                    Cancel(C)
+
+syn match poxTitle 'Turn off computer'
+syn match poxIcon /[\/|_-]/
+syn match poxCancel 'Cancel'
+   ___
+  /   \
+ |  |  |
+ |  |  |
+  \___/
+
+
+   
+ \  |  /
+  \ | /
+---   ---
+  / | \
+ /  |  \
+
+
+
+
+
+
