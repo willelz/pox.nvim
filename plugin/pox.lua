@@ -22,7 +22,7 @@ function Pox()
 		"  Stand By(" .. standByKey .. ")    Turn Off(" .. turnOffKey .. ")    Restart(" .. restartKey .. ")   ",
 		"                                             ",
 		"                                             ",
-		"                                   Cancel(C) ",
+		"                                   Cancel(Q) ",
 	})
 
 	local standByBuf = api.nvim_create_buf(false, true)
@@ -52,8 +52,8 @@ function Pox()
 		" /  |  \\ ",
 	})
 
-	local winRow = api.nvim_get_option("lines") / 2 - 12 / 2
-	local winCol = api.nvim_get_option("columns") / 2 - 45 / 2
+	local winRow = vim.o.lines / 2 - 12 / 2
+	local winCol = vim.o.columns / 2 - 45 / 2
 	local mainOpts = {
 		relative = "editor",
 		width = 45,
@@ -191,7 +191,7 @@ highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 	)
 	api.nvim_buf_set_keymap(mainBuf, "n", vim.g.pox_restart_key, "<cmd>call v:lua.PoxRestart()<CR>", { noremap = true })
 	api.nvim_buf_set_keymap(mainBuf, "n", "<Esc>", "<cmd>call v:lua.PoxCancel()<CR>", { noremap = true })
-	api.nvim_buf_set_keymap(mainBuf, "n", "c", "<cmd>call v:lua.PoxCancel()<CR>", { noremap = true })
+	api.nvim_buf_set_keymap(mainBuf, "n", "q", "<cmd>call v:lua.PoxCancel()<CR>", { noremap = true })
 end
 
 vim.cmd([[command! Pox call v:lua.Pox()]])
