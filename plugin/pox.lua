@@ -137,35 +137,32 @@ highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 
 	api.nvim_set_current_win(mainWin)
 
-	local function setTimeout(timeout, callback)
-		local timer = vim.loop.new_timer()
-		timer:start(timeout, 0, callback)
-	end
-
 	function PoxStandBy()
 		for i = 0, 5, 1 do
 			api.nvim_buf_add_highlight(standByBuf, namespace, "poxPushed", i, 0, -1)
 		end
-		os.execute("systemctl suspend")
-		PoxCancel()
+		vim.defer_fn(function()
+			os.execute("systemctl suspend")
+			PoxCancel()
+		end, 500)
 	end
 
 	function PoxTurnOff()
 		for i = 0, 5, 1 do
 			api.nvim_buf_add_highlight(turnOffBuf, namespace, "poxPushed", i, 0, -1)
 		end
-		setTimeout(800, function()
+		vim.defer_fn(function()
 			os.execute("systemctl poweroff")
-		end)
+		end, 800)
 	end
 
 	function PoxRestart()
 		for i = 0, 5, 1 do
 			api.nvim_buf_add_highlight(restartBuf, namespace, "poxPushed", i, 0, -1)
 		end
-		setTimeout(800, function()
+		vim.defer_fn(function()
 			os.execute("systemctl reboot")
-		end)
+		end, 800)
 	end
 
 	function PoxCancel()
