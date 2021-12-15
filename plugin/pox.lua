@@ -4,6 +4,10 @@ vim.g.pox_stand_by_key = vim.g.pox_stand_by_key or "j"
 vim.g.pox_turn_off_key = vim.g.pox_turn_off_key or "k"
 vim.g.pox_restart_key = vim.g.pox_restart_key or "l"
 
+local standByKey = string.upper(vim.g.pox_stand_by_key)
+local turnOffKey = string.upper(vim.g.pox_turn_off_key)
+local restartKey = string.upper(vim.g.pox_restart_key)
+
 function Pox()
 	local mainBuf = api.nvim_create_buf(false, true)
 	api.nvim_buf_set_lines(mainBuf, 0, -1, true, {
@@ -15,7 +19,7 @@ function Pox()
 		"                                             ",
 		"                                             ",
 		"                                             ",
-		"  Stand By(J)    Turn Off(K)    Restart(L)   ",
+		"  Stand By(" .. standByKey .. ")    Turn Off(" .. turnOffKey .. ")    Restart(" .. restartKey .. ")   ",
 		"                                             ",
 		"                                             ",
 		"                                   Cancel(C) ",
@@ -66,6 +70,7 @@ function Pox()
 		height = 5,
 		row = winRow + 2,
 		col = winCol + 4,
+		focusable = false,
 		zindex = 320,
 		style = "minimal",
 	}
@@ -76,6 +81,7 @@ function Pox()
 		height = 5,
 		row = winRow + 2,
 		col = winCol + 19,
+		focusable = false,
 		zindex = 320,
 		style = "minimal",
 	}
@@ -86,14 +92,15 @@ function Pox()
 		height = 5,
 		row = winRow + 2,
 		col = winCol + 33,
+		focusable = false,
 		zindex = 320,
 		style = "minimal",
 	}
 
 	local mainWin = api.nvim_open_win(mainBuf, 1, mainOpts)
-	local standByWin = api.nvim_open_win(standByBuf, 1, standByOpts)
-	local turnOffWin = api.nvim_open_win(turnOffBuf, 1, turnoffOpts)
-	local restartWin = api.nvim_open_win(restartBuf, 1, restartOpts)
+	local standByWin = api.nvim_open_win(standByBuf, 0, standByOpts)
+	local turnOffWin = api.nvim_open_win(turnOffBuf, 0, turnoffOpts)
+	local restartWin = api.nvim_open_win(restartBuf, 0, restartOpts)
 
 	local namespace = api.nvim_create_namespace("pox")
 	api.nvim_exec(
@@ -133,7 +140,6 @@ highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 	local function setTimeout(timeout, callback)
 		local timer = vim.loop.new_timer()
 		timer:start(timeout, 0, callback)
-		return timer
 	end
 
 	function PoxStandBy()
@@ -169,8 +175,20 @@ highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 		api.nvim_win_close(restartWin, true)
 	end
 
-	api.nvim_buf_set_keymap(mainBuf, "n", vim.g.pox_stand_by_key, "<cmd>call v:lua.PoxStandBy()<CR>", { noremap = true })
-	api.nvim_buf_set_keymap(mainBuf, "n", vim.g.pox_turn_off_key, "<cmd>call v:lua.PoxTurnOff()<CR>", { noremap = true })
+	api.nvim_buf_set_keymap(
+		mainBuf,
+		"n",
+		vim.g.pox_stand_by_key,
+		"<cmd>call v:lua.PoxStandBy()<CR>",
+		{ noremap = true }
+	)
+	api.nvim_buf_set_keymap(
+		mainBuf,
+		"n",
+		vim.g.pox_turn_off_key,
+		"<cmd>call v:lua.PoxTurnOff()<CR>",
+		{ noremap = true }
+	)
 	api.nvim_buf_set_keymap(mainBuf, "n", vim.g.pox_restart_key, "<cmd>call v:lua.PoxRestart()<CR>", { noremap = true })
 	api.nvim_buf_set_keymap(mainBuf, "n", "<Esc>", "<cmd>call v:lua.PoxCancel()<CR>", { noremap = true })
 	api.nvim_buf_set_keymap(mainBuf, "n", "c", "<cmd>call v:lua.PoxCancel()<CR>", { noremap = true })
