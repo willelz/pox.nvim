@@ -21,7 +21,6 @@ function Pox()
 		"                                             ",
 		"  Stand By(" .. standByKey .. ")    Turn Off(" .. turnOffKey .. ")    Restart(" .. restartKey .. ")   ",
 		"                                             ",
-		"                                             ",
 		"                                   Cancel(Q) ",
 	})
 
@@ -52,12 +51,12 @@ function Pox()
 		" /  |  \\ ",
 	})
 
-	local winRow = vim.o.lines / 2 - 12 / 2
+	local winRow = vim.o.lines / 2 - 11 / 2
 	local winCol = vim.o.columns / 2 - 45 / 2
 	local mainOpts = {
 		relative = "editor",
 		width = 45,
-		height = 12,
+		height = 11,
 		row = winRow,
 		col = winCol,
 		zindex = 300,
@@ -105,42 +104,30 @@ function Pox()
 	local namespace = api.nvim_create_namespace("pox")
 	api.nvim_exec(
 		[[
-highlight poxTitle ctermfg=white ctermbg=darkblue guifg=white guibg=#000087
-highlight poxBG ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=#000087
-highlight poxLightBG ctermfg=white ctermbg=lightblue guifg=white guibg=#0087ff
-highlight poxCancel ctermfg=black ctermbg=gray guifg=black  guibg=gray
-highlight poxStandBy ctermfg=white ctermbg=yellow guifg=white guibg=#d75f00
-highlight poxTurnOff ctermfg=white ctermbg=red guifg=white guibg=#ff0000
-highlight poxRestart ctermfg=white ctermbg=green guifg=white guibg=#00af00
-highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
+highlight PoxTitle ctermfg=white ctermbg=darkblue guifg=white guibg=#000087
+highlight PoxBG ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=#000087
+highlight PoxLightBG ctermfg=white ctermbg=lightblue guifg=white guibg=#0087ff
+highlight PoxCancel ctermfg=black ctermbg=gray guifg=black  guibg=gray
+highlight PoxStandBy ctermfg=white ctermbg=yellow guifg=white guibg=#d75f00
+highlight PoxTurnOff ctermfg=white ctermbg=red guifg=white guibg=#ff0000
+highlight PoxRestart ctermfg=white ctermbg=green guifg=white guibg=#00af00
+highlight PoxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 ]],
 		false
 	)
 
-	api.nvim_buf_add_highlight(mainBuf, namespace, "poxTitle", 0, 0, -1)
-	for i = 1, 10, 1 do
-		api.nvim_buf_add_highlight(mainBuf, namespace, "poxLightBG", i, 0, -1)
-	end
-	api.nvim_buf_add_highlight(mainBuf, namespace, "poxBG", 11, 0, -1)
-	api.nvim_buf_add_highlight(mainBuf, namespace, "poxCancel", 11, 35, 44)
-	for i = 0, 5, 1 do
-		api.nvim_buf_add_highlight(standByBuf, namespace, "poxStandBy", i, 0, -1)
-	end
-
-	for i = 0, 5, 1 do
-		api.nvim_buf_add_highlight(turnOffBuf, namespace, "poxTurnOff", i, 0, -1)
-	end
-
-	for i = 0, 5, 1 do
-		api.nvim_buf_add_highlight(restartBuf, namespace, "poxRestart", i, 0, -1)
-	end
+	api.nvim_buf_add_highlight(mainBuf, namespace, "PoxTitle", 0, 0, -1)
+	vim.highlight.range(mainBuf, namespace, "PoxLightBG", { 1, 0 }, { 9, 45 })
+	api.nvim_buf_add_highlight(mainBuf, namespace, "PoxBG", 10, 0, -1)
+	api.nvim_buf_add_highlight(mainBuf, namespace, "PoxCancel", 10, 35, 44)
+	vim.highlight.range(standByBuf, namespace, "PoxStandBy", { 0, 0 }, { 5, 7 })
+	vim.highlight.range(turnOffBuf, namespace, "PoxTurnOff", { 0, 0 }, { 5, 7 })
+	vim.highlight.range(restartBuf, namespace, "PoxRestart", { 0, 0 }, { 5, 9 })
 
 	api.nvim_set_current_win(mainWin)
 
 	function PoxStandBy()
-		for i = 0, 5, 1 do
-			api.nvim_buf_add_highlight(standByBuf, namespace, "poxPushed", i, 0, -1)
-		end
+		vim.highlight.range(standByBuf, namespace, "PoxPushed", { 0, 0 }, { 5, 7 })
 		vim.defer_fn(function()
 			os.execute("systemctl suspend")
 			PoxCancel()
@@ -148,18 +135,14 @@ highlight poxPushed ctermfg=white ctermbg=gray guifg=white guibg=#808080
 	end
 
 	function PoxTurnOff()
-		for i = 0, 5, 1 do
-			api.nvim_buf_add_highlight(turnOffBuf, namespace, "poxPushed", i, 0, -1)
-		end
+		vim.highlight.range(turnOffBuf, namespace, "PoxPushed", { 0, 0 }, { 5, 7 })
 		vim.defer_fn(function()
 			os.execute("systemctl poweroff")
 		end, 800)
 	end
 
 	function PoxRestart()
-		for i = 0, 5, 1 do
-			api.nvim_buf_add_highlight(restartBuf, namespace, "poxPushed", i, 0, -1)
-		end
+		vim.highlight.range(restartBuf, namespace, "PoxPushed", { 0, 0 }, { 5, 9 })
 		vim.defer_fn(function()
 			os.execute("systemctl reboot")
 		end, 800)
